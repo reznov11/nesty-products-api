@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Header } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -6,7 +6,13 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  // This is a custom type of data in Header
+  @Header('Content-Type', 'text/html')
+  getHello(): any {
+    return {
+      name: 'Ammar',
+      age: '28'
+    };
+    // return this.appService.getHello();
   }
 }
