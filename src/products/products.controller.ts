@@ -1,60 +1,63 @@
 import { ProductsService } from './products.service';
-import { Controller, Post, Body, Get, Param, Patch, Delete } from "@nestjs/common";
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 
 @Controller('products')
 export class ProductController {
-    
-    constructor(
-        private readonly productService: ProductsService
-    ) {}
+  constructor(private readonly productService: ProductsService) {}
 
-    @Post()
-    newProduct(
-        @Body('title') prodTitle: string,
-        @Body('description') prodDesc: string,
-        @Body('price') prodPrice: number,
-    ): any {
-        
-        const createdProduct = this.productService.addNewProduct(
-            prodTitle,
-            prodDesc,
-            prodPrice
-        );
+  @Post()
+  async newProduct(
+    @Body('title') prodTitle: string,
+    @Body('description') prodDesc: string,
+    @Body('price') prodPrice: number,
+  ): Promise<any> {
+    const createdProduct = await this.productService.addNewProduct(
+      prodTitle,
+      prodDesc,
+      prodPrice,
+    );
 
-        return { id: createdProduct };
-    }
+    return { id: createdProduct };
+  }
 
-    @Get('all')
-    getProducts(): any{
-        return this.productService.fetchProducts();
-    }
+  @Get('all')
+  async getProducts(): Promise<any> {
+    const products = await this.productService.fetchProducts();
+    return products;
+  }
 
-    @Get('one/:p_id')
-    getOneProduct(
-        @Param('p_id') prodId: string,
-    ): any{
-        return this.productService.fetchOneProduct(prodId);
-    }
+  @Get('one/:p_id')
+  getOneProduct(@Param('p_id') prodId: string): any {
+    return this.productService.fetchOneProduct(prodId);
+  }
 
-    @Patch('edit/:p_id')
-    updateProduct(
-        @Param('p_id') prodId: string,
-        @Body('title') prodTitle: string,
-        @Body('description') prodDesc: string,
-        @Body('price') prodPrice: number,
-    ): any{
-        this.productService.updateProduct(
-            prodId, prodTitle, prodDesc, prodPrice
-        );
-        return {'status': 'Updated!'}
-    }
+  @Patch('edit/:p_id')
+  async updateProduct(
+    @Param('p_id') prodId: string,
+    @Body('title') prodTitle: string,
+    @Body('description') prodDesc: string,
+    @Body('price') prodPrice: number,
+  ): Promise<any> {
+    await this.productService.updateProduct(
+      prodId,
+      prodTitle,
+      prodDesc,
+      prodPrice,
+    );
+    return null;
+  }
 
-    @Delete('delete/:p_id')
-    deleteProduct(
-        @Param('p_id') prodId: string,
-    ): any{
-        this.productService.deleteProduct(prodId);
-        return {'status': 'Deleted!'}
-    }
-
+  @Delete('delete/:p_id')
+  async deleteProduct(@Param('p_id') prodId: string): Promise<any> {
+    await this.productService.deleteProduct(prodId);
+    return { status: 'Deleted!' };
+  }
 }
